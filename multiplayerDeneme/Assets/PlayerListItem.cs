@@ -22,6 +22,7 @@ public class PlayerListItem : MonoBehaviour
     }
     public void SetPlayersValues()
     {
+
         PlayerNameText.text = PlayerName;
         if (!AvatarReceived) { GetPlayerIcon(); }
     }
@@ -31,7 +32,7 @@ public class PlayerListItem : MonoBehaviour
         if (ImageId == -1) { return; }
         PlayerIcon.texture = GetSteamImageAsTexture(ImageId);
     }
-   
+
     private Texture2D GetSteamImageAsTexture(int iImage)
     {
         Texture2D texture = null;
@@ -43,7 +44,7 @@ public class PlayerListItem : MonoBehaviour
             isValid = SteamUtils.GetImageRGBA(iImage, image, (int)(width * height * 4));
             if (isValid)
             {
-                texture = new Texture2D((int)width, (int)height, TextureFormat.ARGB32, false,true);
+                texture = new Texture2D((int)width, (int)height, TextureFormat.ARGB32, false, true);
                 texture.LoadRawTextureData(image);
                 texture.Apply();
             }
@@ -63,5 +64,5 @@ public class PlayerListItem : MonoBehaviour
             return;
         }
     }
-    
+
 }

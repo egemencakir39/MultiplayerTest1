@@ -44,24 +44,22 @@ public class PlayerObjectControl : NetworkBehaviour
         Manager.GamePlayers.Remove(this);
         LobbyControler.Instance.UpdatePlayerList();
     }
+
     private void CmdSetPlayerName(string name)
     {
-        PlayerNameUpdate(this.PlayerName, name);
+        PlayerName = name;
     }
 
-    public void PlayerNameUpdate(string OldValue,string NewValue)
+    public void PlayerNameUpdate(string OldValue, string NewValue)
     {
         if (isServer)
         {
             this.PlayerName = NewValue;
+
         }
         if (isClient)
         {
             LobbyControler.Instance.UpdatePlayerList();
         }
-        {
-            
-        }
-
     }
 }

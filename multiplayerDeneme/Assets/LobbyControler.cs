@@ -49,10 +49,11 @@ public class LobbyControler : MonoBehaviour
 
     public void UpdatePlayerList()
     {
+       
         if (!PlayerItemCreated) { CreateHostPlayerItem(); }
         if(PlayerListIems.Count < Manager.GamePlayers.Count) { CreateClientPlayerItem(); }
         if (PlayerListIems.Count > Manager.GamePlayers.Count) { RemovePlayerItem(); }
-        if (PlayerListIems.Count == manager.GamePlayers.Count) { UpdatePlayerItem(); }
+        if (PlayerListIems.Count == Manager.GamePlayers.Count) { UpdatePlayerItem(); }
         
     }
 
@@ -67,7 +68,6 @@ public class LobbyControler : MonoBehaviour
         {
             GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab) as GameObject;
             PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
-
             NewPlayerItemScript.PlayerName = player.PlayerName;
             NewPlayerItemScript.ConnectionID = player.ConnectionID;
             NewPlayerItemScript.PlayerSteamID = player.PlayerSteamID;
@@ -87,9 +87,10 @@ public class LobbyControler : MonoBehaviour
         {
             if (!PlayerListIems.Any(b => b.ConnectionID == player.ConnectionID))
             {
+                
                 GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab) as GameObject;
                 PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
-
+                
                 NewPlayerItemScript.PlayerName = player.PlayerName;
                 NewPlayerItemScript.ConnectionID = player.ConnectionID;
                 NewPlayerItemScript.PlayerSteamID = player.PlayerSteamID;
@@ -111,6 +112,7 @@ public class LobbyControler : MonoBehaviour
             {
                 if (PlayerListItemScript.ConnectionID == player.ConnectionID)
                 {
+                    
                     PlayerListItemScript.PlayerName = player.PlayerName;
                     PlayerListItemScript.SetPlayersValues();
                 }
