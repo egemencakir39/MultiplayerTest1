@@ -6,6 +6,7 @@ using Steamworks;
 using UnityEngine.UI;
 public class SteamLobby : MonoBehaviour
 {
+    public static SteamLobby Instance;
     protected Callback<LobbyCreated_t> LobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> GameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> LobbyEnter;
@@ -15,14 +16,14 @@ public class SteamLobby : MonoBehaviour
     private const string HostAddressKey = "HostAddress";
     private CustomNetworkManager manager;
 
-    [Header("GameObjects")]
-    public GameObject hostButton;
-    public Text LobbyNameText;
+    
 
     private void Start()
     {
         if (!SteamManager.Initialized) { return; }
 
+        if (Instance == null) { Instance = this; }
+        
         manager = GetComponent<CustomNetworkManager>();
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         GameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
@@ -38,7 +39,7 @@ public class SteamLobby : MonoBehaviour
     {
        if (callBack.m_eResult != EResult.k_EResultOK) { return; }
 
-        Debug.Log("Lobby oluþturuldu");
+        
         manager.StartHost();
         SteamMatchmaking.SetLobbyData(new CSteamID(callBack.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(new CSteamID(callBack.m_ulSteamIDLobby),"name",SteamFriends.GetPersonaName().ToString()+"'S Lobby");
@@ -50,10 +51,8 @@ public class SteamLobby : MonoBehaviour
     }
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        hostButton.SetActive(false);
+       
         LobbyId = callback.m_ulSteamIDLobby;
-        LobbyNameText.gameObject.SetActive(true);
-        LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name");
 
         if (NetworkServer.active) { return; }
 
