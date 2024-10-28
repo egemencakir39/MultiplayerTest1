@@ -19,7 +19,7 @@ public class LobbyControler : MonoBehaviour
 
     public ulong LobbyID;
     public bool PlayerItemCreated = false;
-    private List<PlayerListItem> PlayerListIems = new List<PlayerListItem>();
+    private List<PlayerListItem> PlayerListItems = new List<PlayerListItem>();
     public PlayerObjectControl LocalplayerController;
 
     private CustomNetworkManager manager;
@@ -51,9 +51,9 @@ public class LobbyControler : MonoBehaviour
     {
        
         if (!PlayerItemCreated) { CreateHostPlayerItem(); }
-        if(PlayerListIems.Count < Manager.GamePlayers.Count) { CreateClientPlayerItem(); }
-        if (PlayerListIems.Count > Manager.GamePlayers.Count) { RemovePlayerItem(); }
-        if (PlayerListIems.Count == Manager.GamePlayers.Count) { UpdatePlayerItem(); }
+        if(PlayerListItems.Count < Manager.GamePlayers.Count) { CreateClientPlayerItem(); }
+        if (PlayerListItems.Count > Manager.GamePlayers.Count) { RemovePlayerItem(); }
+        if (PlayerListItems.Count == Manager.GamePlayers.Count) { UpdatePlayerItem(); }
         
     }
 
@@ -76,7 +76,7 @@ public class LobbyControler : MonoBehaviour
             NewPlayerItem.transform.SetParent(PlayerListViewContent.transform);
             NewPlayerItem.transform.localScale = Vector3.one;
 
-            PlayerListIems.Add(NewPlayerItemScript);
+            PlayerListItems.Add(NewPlayerItemScript);
 
         }
         PlayerItemCreated = true;
@@ -85,12 +85,12 @@ public class LobbyControler : MonoBehaviour
     {
         foreach (PlayerObjectControl player in Manager.GamePlayers)
         {
-            if (!PlayerListIems.Any(b => b.ConnectionID == player.ConnectionID))
+            if (!PlayerListItems.Any(b => b.ConnectionID == player.ConnectionID))
             {
-                
+
+
                 GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab) as GameObject;
                 PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
-                
                 NewPlayerItemScript.PlayerName = player.PlayerName;
                 NewPlayerItemScript.ConnectionID = player.ConnectionID;
                 NewPlayerItemScript.PlayerSteamID = player.PlayerSteamID;
@@ -99,7 +99,7 @@ public class LobbyControler : MonoBehaviour
                 NewPlayerItem.transform.SetParent(PlayerListViewContent.transform);
                 NewPlayerItem.transform.localScale = Vector3.one;
 
-                PlayerListIems.Add(NewPlayerItemScript);
+                PlayerListItems.Add(NewPlayerItemScript);
 
             }
         }
@@ -108,7 +108,7 @@ public class LobbyControler : MonoBehaviour
     {
         foreach (PlayerObjectControl player in Manager.GamePlayers)
         {
-            foreach (PlayerListItem PlayerListItemScript in PlayerListIems)
+            foreach (PlayerListItem PlayerListItemScript in PlayerListItems)
             {
                 if (PlayerListItemScript.ConnectionID == player.ConnectionID)
                 {
@@ -125,7 +125,7 @@ public class LobbyControler : MonoBehaviour
     public void RemovePlayerItem()
     {
         List<PlayerListItem> playerListItemToRemove = new List<PlayerListItem>();
-        foreach (PlayerListItem PlayerListItem in PlayerListIems)
+        foreach (PlayerListItem PlayerListItem in PlayerListItems)
         {
             if (!Manager.GamePlayers.Any(b=>b.ConnectionID == PlayerListItem.ConnectionID))
             {
@@ -137,7 +137,7 @@ public class LobbyControler : MonoBehaviour
             foreach (PlayerListItem playerlistItemToRemove in playerListItemToRemove)
             {
                 GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
-                PlayerListIems.Remove(playerlistItemToRemove);
+                PlayerListItems.Remove(playerlistItemToRemove);
                 Destroy(ObjectToRemove);
                 ObjectToRemove = null;
             }
