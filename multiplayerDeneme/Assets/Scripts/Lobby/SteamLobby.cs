@@ -60,6 +60,9 @@ public class SteamLobby : MonoBehaviour
 
         manager.StartClient();
 
+       
+
     }
+
 
 }

@@ -13,7 +13,6 @@ public class PlayerObjectControl : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
 
     private CustomNetworkManager manager;
-
     private CustomNetworkManager Manager
     {
         get
@@ -27,10 +26,13 @@ public class PlayerObjectControl : NetworkBehaviour
     }
 
     public override void OnStartAuthority()
-    { 
+    {
         PlayerName = SteamFriends.GetFriendPersonaName().ToString();
-        CmdSetPlayerName(PlayerName);
-        Debug.Log("Steam arkadaþ ismi alýndý: " + PlayerName);   
+        Debug.Log("Steam arkadaþ ismi alýndý: " + PlayerName);
+       
+            CmdSetPlayerName(PlayerName);
+        
+         
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
         LobbyControler.Instance.UpdateLobbyName();
@@ -38,11 +40,11 @@ public class PlayerObjectControl : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        
         Manager.GamePlayers.Add(this);
         LobbyControler.Instance.UpdateLobbyName();
         LobbyControler.Instance.UpdatePlayerList();
     }
+
     public override void OnStopClient()
     {
         Manager.GamePlayers.Remove(this);
@@ -52,21 +54,21 @@ public class PlayerObjectControl : NetworkBehaviour
     private void CmdSetPlayerName(string playerName)
     {
         Debug.Log("CmdSetPlayerName çalýþýyor: " + playerName);
-        this.PlayerNameUpdate(this.PlayerName, playerName);
+        PlayerName = playerName; 
     }
-    public void PlayerNameUpdate(string OldValue, string NewValue)
-    {
-        Debug.Log("PlayerNameUpdate çalýþýyor. Eski Deðer: " + OldValue + ", Yeni Deðer: " + NewValue);
 
+    public void PlayerNameUpdate(string oldName, string newName)
+    {
+        Debug.Log("PlayerNameUpdate çalýþýyor. Eski Deðer: " + oldName + ", Yeni Deðer: " + newName);
+       
         if (isServer)
         {
-            this.PlayerName = NewValue;
-            
+            PlayerName = newName;
         }
-        if (isClient)
+        if (isClientOnly)
         {
             LobbyControler.Instance.UpdatePlayerList();
-            Debug.Log("PlayerName updated on client: " + NewValue);
+           
         }
     }
 }
