@@ -28,8 +28,12 @@ public class PlayerObjectControl : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        CmdSetPlayerName(PlayerName);
-        PlayerName = SteamFriends.GetFriendPersonaName().ToString();
+        if (isLocalPlayer) { CmdSetPlayerName(PlayerName); }
+
+            Debug.Log("CmdSetPlayerName çaðrýlýyor: " + PlayerName);
+        string steamName = SteamFriends.GetFriendPersonaName().ToString();
+        Debug.Log("Steam arkadaþ ismi alýndý: " + steamName);   
+        PlayerName = steamName;
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
         LobbyControler.Instance.UpdateLobbyName();
@@ -50,17 +54,20 @@ public class PlayerObjectControl : NetworkBehaviour
     [Command]
     private void CmdSetPlayerName(string playerName)
     {
-       PlayerNameUpdate(PlayerName, playerName);
+        Debug.Log("CmdSetPlayerName çalýþýyor: " + playerName);
+        PlayerNameUpdate(PlayerName, playerName);
     }
     public void PlayerNameUpdate(string OldValue, string NewValue)
     {
-        if (isServer)
-        {
+        Debug.Log("PlayerNameUpdate çalýþýyor. Eski Deðer: " + OldValue + ", Yeni Deðer: " + NewValue);
+       
+        
            this.PlayerName = NewValue;
-        }
+        
         if (isClient)
         {
             LobbyControler.Instance.UpdatePlayerList();
+            Debug.Log("PlayerName updated on client: " + NewValue);
         }
     }
 }
