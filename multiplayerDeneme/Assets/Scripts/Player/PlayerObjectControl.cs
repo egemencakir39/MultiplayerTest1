@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Mirror;
 using Steamworks;
 
@@ -27,7 +28,8 @@ public class PlayerObjectControl : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
+        CmdSetPlayerName(PlayerName);
+        PlayerName = SteamFriends.GetFriendPersonaName().ToString();
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
         LobbyControler.Instance.UpdateLobbyName();
@@ -48,14 +50,12 @@ public class PlayerObjectControl : NetworkBehaviour
     [Command]
     private void CmdSetPlayerName(string playerName)
     {
-
-      PlayerNameUpdate(this.PlayerName, playerName);
+       PlayerNameUpdate(PlayerName, playerName);
     }
     public void PlayerNameUpdate(string OldValue, string NewValue)
     {
         if (isServer)
         {
-            Debug.Log("calýstý");
            this.PlayerName = NewValue;
         }
         if (isClient)

@@ -23,7 +23,7 @@ namespace Steamworks {
 		/// <para> like all the other interface functions that return a char *, it's important that this pointer is not saved</para>
 		/// <para> off; it will eventually be free'd or re-allocated</para>
 		/// </summary>
-		public static string GetPersonaName() {
+		public static string GetFriendPersonaName() {
 			InteropHelp.TestIfAvailableClient();
 			return InteropHelp.PtrToStringUTF8(NativeMethods.ISteamFriends_GetPersonaName(CSteamAPIContext.GetSteamFriends()));
 		}
