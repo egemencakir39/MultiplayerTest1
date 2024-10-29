@@ -41,7 +41,11 @@ public class PlayerObjectControl : NetworkBehaviour
     public override void OnStartClient()
     {
         Manager.GamePlayers.Add(this);
-        CmdSetPlayerName(PlayerName);
+        if (isLocalPlayer)
+        {
+            CmdSetPlayerName(PlayerName);
+        }
+        
         LobbyControler.Instance.UpdateLobbyName();
         LobbyControler.Instance.UpdatePlayerList();
     }
