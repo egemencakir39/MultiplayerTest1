@@ -65,7 +65,7 @@ public class PlayerObjectControl : NetworkBehaviour
         {
             PlayerName = newName;
         }
-        if (isClientOnly)
+        if (isClient)
         {
             LobbyControler.Instance.UpdatePlayerList();
            
