@@ -27,9 +27,9 @@ public class PlayerObjectControl : NetworkBehaviour
     }
 
     public override void OnStartAuthority()
-    {
-        CmdSetPlayerName(PlayerName); 
+    { 
         PlayerName = SteamFriends.GetFriendPersonaName().ToString();
+        CmdSetPlayerName(PlayerName);
         Debug.Log("Steam arkadaþ ismi alýndý: " + PlayerName);   
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
