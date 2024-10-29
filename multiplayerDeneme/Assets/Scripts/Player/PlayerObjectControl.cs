@@ -41,6 +41,7 @@ public class PlayerObjectControl : NetworkBehaviour
     public override void OnStartClient()
     {
         Manager.GamePlayers.Add(this);
+        CmdSetPlayerName(PlayerName);
         LobbyControler.Instance.UpdateLobbyName();
         LobbyControler.Instance.UpdatePlayerList();
     }
@@ -67,8 +68,8 @@ public class PlayerObjectControl : NetworkBehaviour
         }
         if (isClient)
         {
+            Debug.Log("Client tarafýnda güncellenen isim: " + newName);
             LobbyControler.Instance.UpdatePlayerList();
-           
         }
     }
 }
