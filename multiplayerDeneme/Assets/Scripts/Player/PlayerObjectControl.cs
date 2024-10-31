@@ -43,7 +43,7 @@ public class PlayerObjectControl : NetworkBehaviour
         Manager.GamePlayers.Add(this);
         if (isLocalPlayer)
         {
-            CmdSetPlayerName(PlayerName);
+            this.CmdSetPlayerName(this.PlayerName);
         }
         
         LobbyControler.Instance.UpdateLobbyName();

@@ -22,7 +22,7 @@ public class PlayerListItem : MonoBehaviour
     }
     public void SetPlayersValues()
     {
-
+        Debug.Log("yeni ekledim" + PlayerName);
         PlayerNameText.text = PlayerName;
         if (!AvatarReceived) { GetPlayerIcon(); }
     }
