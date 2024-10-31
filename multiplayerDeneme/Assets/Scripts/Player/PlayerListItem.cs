@@ -23,7 +23,7 @@ public class PlayerListItem : MonoBehaviour
     public void SetPlayersValues()
     {
         Debug.Log("yeni ekledim" + PlayerName);
-        PlayerNameText.text = PlayerName;
+        PlayerNameText.text = SteamFriends.GetFriendPersonaName((CSteamID)PlayerSteamID);
         if (!AvatarReceived) { GetPlayerIcon(); }
     }
     void GetPlayerIcon()

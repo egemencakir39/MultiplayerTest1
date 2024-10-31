@@ -29,10 +29,7 @@ public class PlayerObjectControl : NetworkBehaviour
     {
         PlayerName = SteamFriends.GetFriendPersonaName().ToString();
         Debug.Log("Steam arkadaþ ismi alýndý: " + PlayerName);
-       
-            CmdSetPlayerName(PlayerName);
-        
-         
+        CmdSetPlayerName(PlayerName);  
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
         LobbyControler.Instance.UpdateLobbyName();
