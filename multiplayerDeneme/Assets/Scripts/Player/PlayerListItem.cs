@@ -13,6 +13,8 @@ public class PlayerListItem : MonoBehaviour
 
     public Text PlayerNameText;
     public RawImage PlayerIcon;
+    public Text PlayerReadyText;
+    public bool Ready;
 
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
 
@@ -20,10 +22,25 @@ public class PlayerListItem : MonoBehaviour
     {
         ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
     }
+
+    public void ChangeReadyStatus()
+    {
+        if (Ready)
+        {
+            PlayerReadyText.text = "Ready";
+            PlayerReadyText.color = Color.green;
+        }
+        else
+        {
+            PlayerReadyText.text = "Unready";
+            PlayerReadyText.color = Color.red;
+        }
+    }
     public void SetPlayersValues()
     {
         Debug.Log("yeni ekledim" + PlayerName);
         PlayerNameText.text = SteamFriends.GetFriendPersonaName((CSteamID)PlayerSteamID);
+        ChangeReadyStatus();
         if (!AvatarReceived) { GetPlayerIcon(); }
     }
     void GetPlayerIcon()

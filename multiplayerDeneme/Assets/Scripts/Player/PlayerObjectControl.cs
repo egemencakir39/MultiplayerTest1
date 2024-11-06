@@ -11,6 +11,7 @@ public class PlayerObjectControl : NetworkBehaviour
     [SyncVar] public int PlayerID;
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
+    [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
 
     private CustomNetworkManager manager;
     private CustomNetworkManager Manager
@@ -25,10 +26,35 @@ public class PlayerObjectControl : NetworkBehaviour
         }
     }
 
+    private void PlayerReadyUpdate(bool oldValue, bool newValue)
+    {
+        if (isServer)
+        {
+            this.Ready = newValue;
+        }
+        if (isClient)
+        {
+            LobbyControler.Instance.UpdatePlayerList();
+        }
+    }
+    [Command]
+    private void CmdSetPlayerReady()
+    {
+        this.PlayerReadyUpdate(this.Ready, !this.Ready);
+    }
+
+    public void ChangeReady()
+    {
+        if (isOwned)
+        {
+            CmdSetPlayerReady();
+        }
+    }
+
     public override void OnStartAuthority()
     {
         PlayerName = SteamFriends.GetFriendPersonaName().ToString();
-        Debug.Log("Steam arkadaþ ismi alýndý: " + PlayerName);
+        Debug.Log("Steam arkadaþ ismi alýndý " + PlayerName);
         CmdSetPlayerName(PlayerName);  
         gameObject.name = "LocalGamePlayer";
         LobbyControler.Instance.FindLocalPlayer();
@@ -38,11 +64,6 @@ public class PlayerObjectControl : NetworkBehaviour
     public override void OnStartClient()
     {
         Manager.GamePlayers.Add(this);
-        if (isLocalPlayer)
-        {
-            this.CmdSetPlayerName(this.PlayerName);
-        }
-        
         LobbyControler.Instance.UpdateLobbyName();
         LobbyControler.Instance.UpdatePlayerList();
     }
@@ -61,8 +82,6 @@ public class PlayerObjectControl : NetworkBehaviour
 
     public void PlayerNameUpdate(string oldName, string newName)
     {
-        Debug.Log("PlayerNameUpdate çalýþýyor. Eski Deðer: " + oldName + ", Yeni Deðer: " + newName);
-       
         if (isServer)
         {
             PlayerName = newName;
