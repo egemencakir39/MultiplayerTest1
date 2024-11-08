@@ -83,7 +83,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     private void RpcMove(Vector2 movementDirection)
     {
-        movement = movementDirection;
+        if (!isLocalPlayer) // Yerel oyuncuda tekrar iþlem yapýlmasýný önlüyoruz
+        {
+            movement = movementDirection;
+        }
     }
 
 }
