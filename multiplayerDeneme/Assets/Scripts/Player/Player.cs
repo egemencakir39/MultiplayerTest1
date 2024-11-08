@@ -27,9 +27,9 @@ public class Player : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            rb.AddForce(movement);
-            currentSpeed = rb.velocity.magnitude;
-            rb.velocity *= 0.95f;
+            rb.velocity = movement;
+            //currentSpeed = rb.velocity.magnitude;
+            //rb.velocity *= 0.95f;
         }
 
     }
@@ -77,6 +77,7 @@ public class Player : NetworkBehaviour
     [Command(requiresAuthority = false)]
     private void CmdMove(Vector2 movementDirection)
     {
+        Debug.Log("CmdMove called with direction: " + movementDirection);
         movement = movementDirection;
         RpcMove(movementDirection);
     }
