@@ -2,33 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
+using Steamworks;
 
 public class Player : NetworkBehaviour
 {
     [Header("Variables")]
     [SerializeField] private float force = 5f;
     public float currentSpeed;
+    public GameObject PlayerModel;
 
     [Header("Physics")]
-    private Vector2 movemenet;
+    private Vector2 movement;
     Rigidbody2D rb;
     private void Start()
     {
+        PlayerModel.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
+        
     }
 
     private void FixedUpdate()
     {
-        rb.AddForce(movemenet);
-        currentSpeed = rb.velocity.magnitude;
-        rb.velocity *= 0.95f;
+        if (isLocalPlayer)
+        {
+            rb.AddForce(movement);
+            currentSpeed = rb.velocity.magnitude;
+            rb.velocity *= 0.95f;
+        }
+
     }
     private void Update()
     {
-        if (isLocalPlayer)
+        
+        if (SceneManager.GetActiveScene().name == "GameScene")
         {
-            Movement();
+            if (PlayerModel.activeSelf == false)
+            {
+                PlayerModel.SetActive(true);
+                SetPosition();
+            }
+            if (isLocalPlayer)
+            {
+                Movement();
+            }
         }
+    }
+
+    public void SetPosition()
+    {
+        transform.position = new Vector2(Random.Range(0, 5), Random.Range(0, 3));
     }
     private void Movement()
     {
@@ -36,12 +59,11 @@ public class Player : NetworkBehaviour
         float Mvertical = Input.GetAxisRaw("Vertical");
 
         Vector2 input = new Vector2(Mhorizontal, Mvertical);
-        
-
         if (input.magnitude > 1)
         {
           input.Normalize();
         }
-         movemenet = input * force;
+         movement = input * force;
     }
+   
 }
