@@ -45,6 +45,7 @@ public class Player : NetworkBehaviour
             if (isOwned)
             {
                 Movement();
+                CmdMove(movement);
             }
         }
     }
@@ -65,5 +66,10 @@ public class Player : NetworkBehaviour
         }
          movement = input * force;
     }
-   
+    [Command]
+    private void CmdMove(Vector2 movementDirection)
+    {
+        movement = movementDirection;
+    }
+
 }
