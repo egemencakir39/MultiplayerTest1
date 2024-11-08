@@ -20,7 +20,21 @@ public class Player : NetworkBehaviour
     {
         PlayerModel.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
-        
+
+        if (isServer)
+        {
+            SetPosition();
+        }
+
+    }
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        if (!isServer)
+        {
+            CmdRequestInitialPosition();
+        }
     }
 
     private void FixedUpdate()
@@ -46,14 +60,6 @@ public class Player : NetworkBehaviour
             if (isLocalPlayer)
             {
                 Movement();
-                if (NetworkClient.ready) // Ýstemcinin hazýr olup olmadýðýný kontrol et
-                {
-                    CmdMove(movement);
-                }
-                else
-                {
-                    NetworkClient.Ready(); // Ýstemciyi hazýr duruma geçir
-                }
             }
         }
     }
@@ -74,20 +80,16 @@ public class Player : NetworkBehaviour
         }
          movement = input * force;
     }
-    [Command(requiresAuthority = false)]
-    private void CmdMove(Vector2 movementDirection)
+    [Command]
+    private void CmdRequestInitialPosition()
     {
-        Debug.Log("CmdMove called with direction: " + movementDirection);
-        movement = movementDirection;
-        RpcMove(movementDirection);
+        RpcSetInitialPosition(transform.position);
     }
+
     [ClientRpc]
-    private void RpcMove(Vector2 movementDirection)
+    private void RpcSetInitialPosition(Vector3 startPosition)
     {
-        if (!isLocalPlayer) // Yerel oyuncuda tekrar iþlem yapýlmasýný önlüyoruz
-        {
-            movement = movementDirection;
-        }
+        transform.position = startPosition;
     }
 
 }
