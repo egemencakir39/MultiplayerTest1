@@ -45,7 +45,14 @@ public class Player : NetworkBehaviour
             if (isLocalPlayer)
             {
                 Movement();
-                CmdMove(movement);
+                if (NetworkClient.ready) // Ýstemcinin hazýr olup olmadýðýný kontrol et
+                {
+                    CmdMove(movement);
+                }
+                else
+                {
+                    NetworkClient.Ready(); // Ýstemciyi hazýr duruma geçir
+                }
             }
         }
     }
