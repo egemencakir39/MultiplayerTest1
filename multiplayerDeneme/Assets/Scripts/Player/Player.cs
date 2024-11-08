@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour
                 PlayerModel.SetActive(true);
                 SetPosition();
             }
-            if (isLocalPlayer)
+            if (isOwned)
             {
                 Movement();
             }
