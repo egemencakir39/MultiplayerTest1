@@ -27,9 +27,9 @@ public class Player : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            rb.velocity = movement;
-            //currentSpeed = rb.velocity.magnitude;
-            //rb.velocity *= 0.95f;
+            rb.AddForce(movement);
+           currentSpeed = rb.velocity.magnitude;
+            rb.velocity *= 0.95f;
         }
 
     }
