@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour
     public GameObject PlayerModel;
 
     [Header("Physics")]
+    [SyncVar]
     private Vector2 movement;
     Rigidbody2D rb;
     private void Start()
@@ -75,6 +76,12 @@ public class Player : NetworkBehaviour
     }
     [Command(requiresAuthority = false)]
     private void CmdMove(Vector2 movementDirection)
+    {
+        movement = movementDirection;
+        RpcMove(movementDirection);
+    }
+    [ClientRpc]
+    private void RpcMove(Vector2 movementDirection)
     {
         movement = movementDirection;
     }
