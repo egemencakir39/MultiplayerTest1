@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour
                 PlayerModel.SetActive(true);
                 SetPosition();
             }
-            if (isOwned)
+            if (isLocalPlayer)
             {
                 Movement();
                 CmdMove(movement);
@@ -66,7 +66,7 @@ public class Player : NetworkBehaviour
         }
          movement = input * force;
     }
-    [Command]
+    [Command(requiresAuthority = false)]
     private void CmdMove(Vector2 movementDirection)
     {
         movement = movementDirection;
