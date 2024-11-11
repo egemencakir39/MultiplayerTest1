@@ -9,7 +9,7 @@ using Steamworks;
 public class CustomNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectControl GamePlayerPrefab;
-    
+    [SerializeField] private GameObject ballPrefab;
     public List<PlayerObjectControl> GamePlayers { get; } = new List<PlayerObjectControl>();
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -28,5 +28,13 @@ public class CustomNetworkManager : NetworkManager
     {
         ServerChangeScene(SceneName);
     }
-
+    public override void OnServerSceneChanged(string sceneName)
+    {
+        if (sceneName == "GameScene")
+        {
+            // Topu sunucu tarafýndan spawn et ve að üzerinden paylaþ
+            GameObject ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
+            NetworkServer.Spawn(ball);
+        }
+    }
 }
