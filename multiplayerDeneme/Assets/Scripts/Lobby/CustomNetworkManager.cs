@@ -9,8 +9,7 @@ using Steamworks;
 public class CustomNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectControl GamePlayerPrefab;
-    [SerializeField] private GameObject Ball;
-    public string gameSceneName = "GameScene";
+    
     public List<PlayerObjectControl> GamePlayers { get; } = new List<PlayerObjectControl>();
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -24,31 +23,7 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
         }
     }
-    private void Start()
-    {
-       
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Eðer oyun sahnesindeysek ve sunucuysak topu spawn et
-        if (scene.name == gameSceneName)
-        {
-            SpawnBall();
-        }
-    }
-    private void SpawnBall()
-    {
-        // Topu merkezde oluþtur ve að üzerinden spawn et
-        GameObject ball = Instantiate(Ball, Vector3.zero, Quaternion.identity);
-        NetworkServer.Spawn(ball);
-    }
-    private void OnDestroy()
-    {
-        // Olay dinleyicisini temizle
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
+   
     public void StartGame(string SceneName)
     {
         ServerChangeScene(SceneName);
