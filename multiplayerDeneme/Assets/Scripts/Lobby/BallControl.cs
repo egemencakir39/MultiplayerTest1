@@ -18,10 +18,10 @@ public class BallControl : NetworkBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Çarpan oyuncuya yetki devret
             NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
             NetworkIdentity playerNetIdentity = collision.gameObject.GetComponent<NetworkIdentity>();
 
+            // Yetkiyi oyuncuya ver
             if (netIdentity.connectionToClient != playerNetIdentity.connectionToClient)
             {
                 if (netIdentity.connectionToClient != null)
@@ -30,20 +30,23 @@ public class BallControl : NetworkBehaviour
                 }
                 netIdentity.AssignClientAuthority(playerNetIdentity.connectionToClient);
             }
+
+            // Çarpýþma yönünde kuvvet uygula
+            Vector2 forceDirection = collision.relativeVelocity.normalized * 5f; // Kuvvet miktarýný ayarla
+            rb.AddForce(forceDirection, ForceMode2D.Impulse);
+
+            // Yetkiyi geri al
+            Invoke(nameof(RemoveAuthority), 0.1f); // Küçük bir gecikme ile yetkiyi kaldýr
         }
     }
 
-    [Command]
-    public void CmdApplyForce(Vector2 force)
+    [Server]
+    private void RemoveAuthority()
     {
-        rb.AddForce(force, ForceMode2D.Impulse);
-        RpcUpdateBallPosition(transform.position, rb.velocity);
-    }
-
-    [ClientRpc]
-    private void RpcUpdateBallPosition(Vector3 position, Vector2 velocity)
-    {
-        transform.position = position;
-        rb.velocity = velocity;
+        NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
+        if (netIdentity.connectionToClient != null)
+        {
+            netIdentity.RemoveClientAuthority();
+        }
     }
 }
