@@ -285,6 +285,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 4744855206361969983, guid: 814342aa6c5128f428539c9eabd661a9, type: 3}
+  - {fileID: 1304579343826945491, guid: 5ed9fc61b5d535a43ab07e9f1b34a7dc, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -301,6 +302,8 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   GamePlayerPrefab: {fileID: 2912905001510971846, guid: 814342aa6c5128f428539c9eabd661a9, type: 3}
+  Ball: {fileID: 1304579343826945491, guid: 5ed9fc61b5d535a43ab07e9f1b34a7dc, type: 3}
+  gameSceneName: GameScene
 --- !u!4 &448111229
 Transform:
   m_ObjectHideFlags: 0

@@ -55,7 +55,6 @@ public class Player : NetworkBehaviour
             if (PlayerModel.activeSelf == false)
             {
                 PlayerModel.SetActive(true);
-                SetPosition();
             }
             if (isLocalPlayer)
             {
