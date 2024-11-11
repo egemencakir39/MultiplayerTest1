@@ -5,41 +5,48 @@ using Mirror;
 
 public class BallControl : NetworkBehaviour
 {
-    public float moveSpeed = 5f;
     private Rigidbody2D rb;
+    public float moveSpeed = 5f; // Topun hareket hýzýný ayarlayabiliriz.
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (isLocalPlayer) // Yalnýzca yerel oyuncunun inputlarýný al
+        if (isServer) // Sadece sunucu topu hareket ettirir
         {
-            // Hareketi yalnýzca yerel oyuncu inputu ile sunucuya gönder
-            Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed * Time.deltaTime;
-            CmdMoveBall(movement); // Hareketi sunucuya gönder
+            // Çarpýþma sonucu topun hareket etmesi
+            // Bu kýsmý oyuncularýn topa fiziksel etkileþime girmesiyle saðlayacaðýz
+            // Burada fiziksel etkileþim için ek kontrol gerekebilir
         }
     }
 
-    // Komut kullanarak topu hareket ettir
-    [Command]
-    private void CmdMoveBall(Vector2 movement)
-    {
-        // Sunucuda topu hareket ettir
-        rb.MovePosition(rb.position + movement);
-        RpcUpdateBallPosition(rb.position); // Pozisyonu istemcilere güncelle
-    }
-
-    // RPC ile topun yeni pozisyonunu tüm istemcilere gönder
+    // Sunucuya baðlý olarak topun yeni pozisyonu tüm istemcilere iletilir
     [ClientRpc]
     private void RpcUpdateBallPosition(Vector2 newPosition)
     {
-        // Topun pozisyonunu istemcilerde güncelle
-        if (!isServer) // Sunucuda bu fonksiyon çalýþmasýn
+        // Topun konumunu istemcilerde güncelle
+        if (!isServer)
         {
             rb.position = newPosition;
+        }
+    }
+
+    // Topa çarpan oyuncudan gelen hareketi iþleyelim
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Burada çarpýþma ile ilgili hareketi fiziksel olarak iþleyebilirsiniz
+        // Herhangi bir oyuncu topa çarptýðýnda, topu hareket ettirebiliriz
+        if (collision.gameObject.CompareTag("Player")) // Oyuncu ile çarpýþma
+        {
+            // Topun hareket etmesini saðla, buraya itme kuvveti uygulayabilirsiniz
+            Vector2 pushDirection = collision.relativeVelocity.normalized; // Çarpma yönü
+            rb.AddForce(pushDirection * moveSpeed, ForceMode2D.Impulse); // Topu itme
+
+            // Yeni pozisyonu tüm istemcilerle güncelle
+            RpcUpdateBallPosition(rb.position);
         }
     }
 }
