@@ -3,14 +3,30 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BallControl : NetworkBehaviour
 {
     private Rigidbody2D rb;
 
-    public override void OnStartServer()
+    void Start()
     {
-        base.OnStartServer();
+        rb = GetComponent<Rigidbody2D>();
+    }
 
-        rb.simulated = true;
+    [ServerCallback]
+    void FixedUpdate()
+    {
+        // Top hareketi sunucu tarafýndan kontrol edilir
+    }
+
+    [ServerCallback]
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // Çarpma olayýný yönet
+            Vector2 force = collision.relativeVelocity * rb.mass;
+            rb.AddForce(force, ForceMode2D.Impulse);
+        }
     }
 }
