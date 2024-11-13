@@ -11,12 +11,15 @@ public class ballController : NetworkBehaviour
         // Sadece sunucu tarafýnda çalýþtýrmak için kontrol ediyoruz
         if (isServer && collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("asd");
             NetworkIdentity playerIdentity = collision.gameObject.GetComponent<NetworkIdentity>();
             if (playerIdentity != null)
             {
-                // Yetkiyi devretmeden önce mevcut yetkiyi kaldýrýyoruz
-                AssignAuthority(playerIdentity.connectionToClient);
+                // Yetki devri iþlemi için kontrol ediyoruz
+                if (!GetComponent<NetworkIdentity>().isOwned)
+                {
+                    // Topun daha önce atanmýþ bir yetkisi varsa kaldýrýyoruz
+                    AssignAuthority(playerIdentity.connectionToClient);
+                }
             }
         }
     }
