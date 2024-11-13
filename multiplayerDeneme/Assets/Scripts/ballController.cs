@@ -6,6 +6,29 @@ using UnityEngine;
 
 public class ballController : NetworkBehaviour
 {
+    private Rigidbody2D rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
+        // Eðer client authority'ye sahipsek, topu sadece client'ta hareket ettiriyoruz
+        if (isOwned)
+        {
+            HandleBallMovement();
+        }
+    }
+
+    private void HandleBallMovement()
+    {
+        // Basit bir kontrol mekanizmasý; topu ileriye doðru hareket ettiriyoruz
+        float moveSpeed = 10f;
+        rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // Yalnýzca X ekseninde hareket ettiriyoruz
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Sadece sunucu tarafýnda çalýþtýrmak için kontrol ediyoruz
@@ -14,12 +37,16 @@ public class ballController : NetworkBehaviour
             NetworkIdentity playerIdentity = collision.gameObject.GetComponent<NetworkIdentity>();
             if (playerIdentity != null)
             {
-                // Yetki devri iþlemi için kontrol ediyoruz
-                if (!GetComponent<NetworkIdentity>().isOwned)
+                // Topun authority'si var mý? Varsa, önce authority'yi kaldýrýyoruz
+                NetworkIdentity ballIdentity = GetComponent<NetworkIdentity>();
+
+                if (ballIdentity.isOwned)
                 {
-                    // Topun daha önce atanmýþ bir yetkisi varsa kaldýrýyoruz
-                    AssignAuthority(playerIdentity.connectionToClient);
+                    ballIdentity.RemoveClientAuthority();
                 }
+
+                // Yetki devri iþlemi
+                AssignAuthority(playerIdentity.connectionToClient);
             }
         }
     }
@@ -28,12 +55,6 @@ public class ballController : NetworkBehaviour
     private void AssignAuthority(NetworkConnectionToClient conn)
     {
         NetworkIdentity ballIdentity = GetComponent<NetworkIdentity>();
-
-        // Topun daha önce atanmýþ bir yetkisi varsa, öncelikle kaldýrýyoruz
-        if (ballIdentity.isOwned)
-        {
-            ballIdentity.RemoveClientAuthority();
-        }
 
         // Yeni client'a yetki veriyoruz
         ballIdentity.AssignClientAuthority(conn);
